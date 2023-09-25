@@ -1,5 +1,5 @@
 package net.zhuruoling.frpmgr.node;
 
-fun main() {
+fun main(args: Array<String>) {
 
 }

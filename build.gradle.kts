@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toUpperCaseAsciiOnly
 import java.io.ByteArrayOutputStream
 
@@ -12,6 +13,10 @@ plugins {
 
 group = "net.zhuruoling"
 version = "0.0.1"
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "17"
+}
 
 application {
     mainClass.set("net.zhuruoling.frpmgr.MainKt")

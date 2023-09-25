@@ -10,7 +10,7 @@ import java.util.*
 import java.util.concurrent.ArrayBlockingQueue
 
 open class Process(
-    val name: String,
+    private val name: String,
     val commandBuilder: CommandBuilder,
     val workingDir: String,
     val description: String,
@@ -25,7 +25,7 @@ open class Process(
     private lateinit var input: InputStream
     var processStarted = false
     private val queue = ArrayBlockingQueue<String>(1024)
-    private var process: Process? = null
+    protected var process: Process? = null
     private var processOutputReader: ProcessOutputReader? = null
     var startFailReason: RuntimeException? = null
 

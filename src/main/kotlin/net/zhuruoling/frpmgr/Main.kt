@@ -18,4 +18,12 @@ fun main(args: Array<String>) {
         BuildProperties["commitId"]?.substring(0, 7)
     } $buildTime)"
     logger.info("$versionInfoString is running on ${os.name} ${os.arch} ${os.version} at pid ${runtime.pid}")
+    if (args.contains("daemon")){
+        net.zhuruoling.frpmgr.daemon.main(args)
+    }else if (args.contains("console")){
+        net.zhuruoling.frpmgr.console.main(args)
+    }else if (args.contains("node")){
+        net.zhuruoling.frpmgr.node.main(args)
+    }
+
 }
