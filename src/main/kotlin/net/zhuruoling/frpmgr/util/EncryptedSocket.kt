@@ -1,5 +1,7 @@
 package net.zhuruoling.frpmgr.util
 
+import io.ktor.network.sockets.*
+import io.ktor.utils.io.*
 import org.jetbrains.annotations.Contract
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
@@ -13,10 +15,15 @@ import javax.crypto.IllegalBlockSizeException
 import javax.crypto.NoSuchPaddingException
 
 //AES/ECB/PKCS5Padding
-class EncryptedSocket constructor(private val `in`: BufferedReader, private val out: PrintWriter, key: String) {
+class EncryptedSocket(
+    private val socket: Socket,
+    key: String
+) {
+    val isClosed get() = socket.isClosed
     private val key: ByteArray
     private val logger = LoggerFactory.getLogger("EncryptedSocket")
-
+    private val inChannel = socket.openReadChannel()
+    private val outChannel = socket.openWriteChannel(autoFlush = true)
     init {
         this.key = toPaddedAesKey(key).toByteArray(StandardCharsets.UTF_8)
     }
@@ -28,7 +35,7 @@ class EncryptedSocket constructor(private val `in`: BufferedReader, private val 
         BadPaddingException::class,
         InvalidKeyException::class
     )
-    fun println(content: String) {
+    suspend fun println(content: String) {
         send(content)
     }
 
@@ -39,11 +46,11 @@ class EncryptedSocket constructor(private val `in`: BufferedReader, private val 
         BadPaddingException::class,
         InvalidKeyException::class
     )
-    fun send(content: String) {
+    suspend fun send(content: String) {
         val data = encryptECB(content.toByteArray(StandardCharsets.UTF_8), key)
         logger.debug("Sending:$content")
-        out.println(String(data, StandardCharsets.UTF_8))
-        out.flush()
+        outChannel.writeStringUtf8(String(data, StandardCharsets.UTF_8) + "\n")
+        outChannel.flush()
     }
 
     @Throws(
@@ -54,8 +61,8 @@ class EncryptedSocket constructor(private val `in`: BufferedReader, private val 
         BadPaddingException::class,
         InvalidKeyException::class
     )
-    fun readLine(): String? {
-        val line = `in`.readLine() ?: return null
+    suspend fun readLine(): String? {
+        val line = inChannel.readUTF8Line() ?: return null
         logger.debug("Received:$line")
         val data = decryptECB(line.toByteArray(StandardCharsets.UTF_8), key)
         return String(data, StandardCharsets.UTF_8)

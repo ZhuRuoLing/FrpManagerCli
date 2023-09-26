@@ -56,6 +56,8 @@ dependencies {
     implementation("uk.org.lidalia:sysout-over-slf4j:1.0.2")
     implementation("com.mojang:brigadier:1.0.18")
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }

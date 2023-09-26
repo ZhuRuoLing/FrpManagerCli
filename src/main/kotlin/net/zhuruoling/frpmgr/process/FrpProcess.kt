@@ -4,20 +4,22 @@ import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("FrpProcess")
 
-class FrpProcess(frpCommandBuilder: FrpCommandBuilder, workingDir: String) : Process(
+open class FrpProcess(
+    frpCommandBuilder: FrpCommandBuilder, workingDir: String, onLogOutput: (String) -> Unit = {
+        logger.info(it)
+    }
+) : Process(
     "FrpProcess",
     frpCommandBuilder,
     workingDir,
     "",
-    {
-        logger.info(it)
-    },
+    onLogOutput,
     { it },
     { true },
     {
 
-    }){
-    fun end(){
+    }) {
+    fun end() {
         this.process?.destroyForcibly()
     }
 }
