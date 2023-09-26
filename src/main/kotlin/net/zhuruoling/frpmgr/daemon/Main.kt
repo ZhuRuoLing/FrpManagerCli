@@ -30,7 +30,7 @@ fun main(args: Array<String>) {
     logger.info("Using Frps Token: $frpsAccessToken")
     logger.info("Using JobServer Token: ${Config.jobKey}")
     applicationThread = thread(start = false) {
-        applicationMain(args)
+        applicationMain(arrayOf("-port=${Config.httpPort}", *args))
     }
     jobServerThread = SocketJobServer()
     applicationThread.start()
