@@ -24,7 +24,6 @@ private lateinit var frpProcess: FrpsProcess
 private lateinit var applicationThread: Thread
 
 
-
 fun main(args: Array<String>) {
     Config.obtainFromArgs(args)
     NodeData.load()
@@ -46,10 +45,10 @@ fun main(args: Array<String>) {
                     val job = jobs.pop()
                     logger.info("Handling job \"${job.command}\" from ${job.fromDesc}")
                     val src = CommandSource()
-                    try{
+                    try {
                         val result = dispatcher.execute(job.command, src)
                         job.callback(src, result)
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
                         e.stackTraceToString().split("\n").forEach(src::sendError)
                         job.callback(src, -1)
                     }
